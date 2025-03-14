@@ -3,95 +3,183 @@
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
-  height: 100vh;
-  background-color: #f0f0f0;
-}
-
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  filter: brightness(0.8);
-  z-index: -1;
-}
-
-.login-container {
-  width: 100%;
-  max-width: 400px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0072ff, #00c6ff);
+  color: #333;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: white;
-  text-align: center;
-  z-index: 1;
 }
 
-form div {
+.container {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
 }
 
-label {
+.login-container, .info-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  background-color: white;
+  text-align: center;
+}
+
+.info-container h4 {
+  margin: 3px;
+}
+
+header h1 {
+  font-size: 24px;
   margin-bottom: 5px;
+  color: black;
+}
+
+header h3 {
+  font-size: 16px;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 input {
   padding: 12px;
-  border: 1px solid #d7d7d7;
-  border-radius: 4px;
-  transition: border 0.2 ease-in-out;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
   width: 100%;
+  transition: all 0.3s ease;
 }
 
 input:focus {
-  border-color: #3a8aaa;
+  border-color: #0072ff;
+  box-shadow: 0 0 5px rgba(0, 114, 255, 0.5);
+  outline: none;
 }
 
 button {
-  padding: 12px;
-  background-color: #3a8aaa;
+  padding: 14px;
+  background-color: #0072ff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.2 ease-in-out;
-  width: 100%;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
 }
 
 button:hover {
-  background-color: #337893;
+  background-color: #005bb5;
 }
 
-h2 {
+p {
+  color: red;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
   text-align: center;
-  font-size: 32px;
+  width: 90%;
+  max-width: 350px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.modal p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 12px;
+  font-size: 16px;
+  width: 45%;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-actions button:first-child {
+  background-color: #0072ff;
+  color: white;
+}
+
+.modal-actions button:first-child:hover {
+  background-color: #005bb5;
+}
+
+.modal-actions button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+.modal-actions button:last-child:hover {
+  background-color: #c82333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  font-size: 16px;
+  color: #444;
+}
+
+ul li {
+  margin: 5px 0;
+  color: #005ac8;
 }
 
 @media (min-width: 768px) {
-  body {
-    background-color: #e0e0e0;
+  .container {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 1200px;
+    gap: 40px;
   }
+}
 
-  .login-container {
-    max-width: 500px;
-    padding: 40px;
-  }
-
-  h2 {
-    font-size: 32px;
-  }
+.container-users-passwords {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+  align-items: center;
+  padding: 4px;
 }

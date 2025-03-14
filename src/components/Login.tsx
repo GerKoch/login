@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react"
+import Modal from "./Modal";
+import { PiUserCircleLight } from "react-icons/pi";
 
 interface userProps {
   username: string;
@@ -7,11 +9,11 @@ interface userProps {
 }
 
 const users: userProps[] = [
-  { username: "user1", password: "password1", background: "/images/florian-olivo-4hbJ-eymZ1o-unsplash.jpg" },
-  { username: "user2", password: "password2", background: "/images/logan-weaver-lgnwvr-XcBPc0Q_2h8-unsplash.jpg" },
-  { username: "user3", password: "password3", background: "/images/quentin-martinez-_jZHQ3NalY4-unsplash.jpg" },
-  { username: "user4", password: "password4", background: "/images/sergey-shmidt-koy6FlCCy5s-unsplash.jpg" },
-  { username: "user5", password: "password5", background: "/images/shifaaz-shamoon-okVXy9tG3KY-unsplash.jpg" }
+  { username: "User 1", password: "password1", background: "/images/florian-olivo-4hbJ-eymZ1o-unsplash.jpg" },
+  { username: "User 2", password: "password2", background: "/images/logan-weaver-lgnwvr-XcBPc0Q_2h8-unsplash.jpg" },
+  { username: "User 3", password: "password3", background: "/images/quentin-martinez-_jZHQ3NalY4-unsplash.jpg" },
+  { username: "User 4", password: "password4", background: "/images/sergey-shmidt-koy6FlCCy5s-unsplash.jpg" },
+  { username: "User 5", password: "password5", background: "/images/shifaaz-shamoon-okVXy9tG3KY-unsplash.jpg" }
 ]
 
 const Login = () => {
@@ -21,43 +23,52 @@ const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userBackground, setUserBackground] = useState("")
   const [currentUser, setCurrentUser] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     const storedUsername = sessionStorage.getItem("username")
     const storedBackground = sessionStorage.getItem("background")
 
     if (storedUsername) {
-      setIsLoggedIn(true)
       setUsername(storedUsername)
       setUserBackground(storedBackground || "")
       setCurrentUser(storedUsername)
+      setLoading(true)
     }
+    setLoading(false)
   }, [])
 
   useEffect(() => {
-    document.body.style.backgroundImage = `url(${userBackground})`
-    document.body.style.backgroundSize = "cover"
-    document.body.style.backgroundPosition = "center"
-    document.body.style.backgroundRepeat = "no-repeat"
+    if (userBackground) {
+      document.body.style.backgroundImage = `url(${userBackground})`
+      document.body.style.backgroundSize = "cover"
+      document.body.style.backgroundPosition = "center"
+      document.body.style.backgroundRepeat = "no-repeat"
+    }
   }, [userBackground])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const user = users.find(u => u.username === username && u.password === password)
+    const user = users.find(u => u.username === username)
 
-    if (user) {
+    if (!user || user.password !== password) {
+      setError("Datos incorrectos")
+    } else {
       sessionStorage.setItem("username", username)
       sessionStorage.setItem("background", user.background)
       setUserBackground(user.background)
       setCurrentUser(user.username)
       setIsLoggedIn(true)
       setError("")
-    } else {
-      setError("Usuario o contraseña incorrectos")
     }
   }
 
   const handleLogout = () => {
+    setShowModal(true)
+  }
+
+  const confirmLogout = () => {
     sessionStorage.removeItem("username")
     sessionStorage.removeItem("background")
     setIsLoggedIn(false)
@@ -65,47 +76,87 @@ const Login = () => {
     setCurrentUser("")
     setUsername("")
     setPassword("")
+    setShowModal(false)
+  }
+
+  const cancelLogout = () => {
+    setShowModal(false)
   }
 
   return (
-    <div className="login-container">
-      <header>
-        {isLoggedIn && <h1>Hola, {currentUser} ¡Bienvenido a tu sesión!</h1>}
-      </header>
+    <div className="container">
+      <div className="login-container">
+        <header>
+          {
+            isLoggedIn &&
+            <>
+              <h1>Hola, {currentUser}</h1>
+              <h3>¡Bienvenido a tu sesion!</h3>
+            </>
+          }
+        </header>
+        {loading ? (<p>Cargando...</p>) : !isLoggedIn ? (
+          <div>
+            <PiUserCircleLight size={90} />
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor="username">Usuario</label>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="password">Contraseña</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                />
+              </div>
+              {error && <p>{error}</p>}
+              <button type="submit">Iniciar sesión</button>
+            </form>
+          </div>
+        ) : (
+          <>
+            <button onClick={handleLogout}>Cerrar sesión</button>
+          </>
+        )}
 
-      {!isLoggedIn ? (
-        <>
-          <h2>Iniciar sesión</h2>
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="username">Usuario</label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={e => setUsername(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-            </div>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <button type="submit">Iniciar sesión</button>
-          </form>
-        </>
-      ) : (
-        <div>
-          <h2>Bienvenido {currentUser}</h2>
-          <button onClick={handleLogout}>Cerrar sesión</button>
+        {showModal && (
+          <Modal
+            message="¿Seguro que quieres cerrar tu sesión?"
+            onConfirm={confirmLogout}
+            onCancel={cancelLogout}
+          />
+        )}
+      </div>
+      <div className="info-container">
+        <h3>Bienvenido a Login App</h3>
+        <h4>Accede con los diferentes usuarios y el backroud cambiará</h4>
+        <div className="container-users-passwords">
+          <ul>
+            Usuarios
+            <li>User 1</li>
+            <li>User 2</li>
+            <li>User 3</li>
+            <li>User 4</li>
+            <li>User 5</li>
+          </ul>
+          <ul>
+            Contraseñas
+            <li>password1</li>
+            <li>password2</li>
+            <li>password3</li>
+            <li>password4</li>
+            <li>password5</li>
+          </ul>
         </div>
-      )
-      }
+      </div>
     </div>
   )
 }
